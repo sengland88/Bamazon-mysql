@@ -237,16 +237,35 @@ function addProducts() {
               return false;
             }
           }
-        }
+        },
+        {
+          type: "input",
+          name: "number",
+          message: "Please create an unique item number?",
+          validate: function(value) {
+            if (isNaN(value) === false) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        },
       ])
-      .then(function(data) {     
-        
-        var resArray = [];
+      .then(function(data) {   
 
         for (var i = 0; i < res.length; i++) {
-          if (res[i].product_name === data.item) {
-            console.log("This product already exists.")
-            console.log("You will need to update the quantity instead")
+          if (res[i].product_name === data.item || res[i].item_id === parseInt(data.number)) {
+
+            if (res[i].product_name === data.item) {
+              console.log("Product Already Exists")
+              console.log("You will need to update the quantity instead")
+            }
+
+            if (res[i].item_id === parseInt(data.number)) {
+              console.log("Unique item id already exists. Please start over.")
+              addProducts()
+              return
+            }
 
             inquirer
             .prompt([
@@ -284,6 +303,7 @@ function addProducts() {
         var query = connection.query(
           "INSERT INTO products SET ?",
           {
+            item_id: data.number,
             product_name: data.item,
             department_name: data.department,
             price: data.price,
