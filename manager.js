@@ -32,9 +32,10 @@ inquirer
     connection.connect(function(err) {
       if (err) throw err;
       console.log("connected as id " + connection.threadId);
+      console.log("\n")
       console.log(
-        `Hello ${userName}! Welcome to Bamazon Product Management System`
-      );
+        `Hello ${userName}! Welcome to the Bamazon Product Management System`);
+      console.log("\n")
       runProgram();
     });
   });
@@ -83,10 +84,7 @@ function runProgram() {
 }
 
 function viewProducts() {
-  connection.query("SELECT * FROM products WHERE stock_quantity > 0 ", function(
-    err,
-    res
-  ) {
+  connection.query("SELECT * FROM products WHERE stock_quantity > 0 ", function(err,res) {
     if (err) throw err;
 
     console.table(res);
@@ -96,12 +94,11 @@ function viewProducts() {
 }
 
 function lowInventory() {
-  connection.query("SELECT * FROM products WHERE stock_quantity < 5 ", function(
-    err,
-    res
-  ) {
+  connection.query("SELECT * FROM products WHERE stock_quantity < 25 ", function(err,res) {
     if (err) throw err;
 
+    console.log("Here are all the items that have a quantity of 25 or less.")
+    console.log("\n");
     console.table(res);
     console.log("\n");
 
@@ -174,7 +171,6 @@ function addInventory() {
         for (var i = 0; i < res.length; i++) {
           if (res[i].product_name === data.choice) {
             chosenItem = res[i];
-            console.log(chosenItem);
           }
         }
 
@@ -243,8 +239,46 @@ function addProducts() {
           }
         }
       ])
-      .then(function(data) {
-        console.log(data);
+      .then(function(data) {     
+        
+        var resArray = [];
+
+        for (var i = 0; i < res.length; i++) {
+          if (res[i].product_name === data.item) {
+            console.log("This product already exists.")
+            console.log("You will need to update the quantity instead")
+
+            inquirer
+            .prompt([
+              {
+                name: "choice",
+                type: "list",
+                message: "What would you like to do?",
+                choices: ["Add Inventory", "Go Back to Main Menu", "Sign out"]
+              }
+            ])
+            .then(function(data) {
+              switch (data.choice) {
+                case "Add Inventory":
+                  addInventory();
+                  break;
+                case "Go Back to Main Menu":
+                  runProgram();
+                  break;
+                case "Sign out":
+                  connection.end();
+                  break;
+                default:
+                  console.log(
+                    "Im sorry — I do not recognize that command; please try again"
+                  );
+                  runProgram();
+                  break;
+              }
+            });
+            return
+          }
+        }
 
         console.log("Inserting a new product...\n");
         var query = connection.query(

@@ -56,13 +56,11 @@ function runProgram() {
         }
       ])
       .then(function(data) {
-        console.log(data);
 
         var chosenItem;
         for (var i = 0; i < res.length; i++) {
           if (res[i].product_name === data.choice) {
             chosenItem = res[i];
-            console.log(chosenItem);
           }
         }
 
@@ -129,11 +127,16 @@ function runProgram() {
                   function(error) {
                     if (error) throw err;
 
-                    let plural = parseInt(data.amount) > 1 ? "s" : ""
-                    
+                    let plural = parseInt(data.amount) > 1 ? "s" : "";
+
                     if (parseInt(data.amount) > 1) {
-                      console.log(`You just purchased ${data.amount} ${chosenItem.product_name}${plural} for $${parseInt(data.amount) * parseInt(chosenItem.price)}!`);
-                    } 
+                      console.log(
+                        `You just purchased ${data.amount} ${
+                          chosenItem.product_name
+                        }${plural} for $${parseInt(data.amount) *
+                          parseInt(chosenItem.price)}!`
+                      );
+                    }
                     restart();
                   }
                 );
@@ -152,7 +155,7 @@ function runProgram() {
 }
 
 function restart() {
-  console.log("\n\n\n");
+  console.log("\n\n");
 
   inquirer
     .prompt([
@@ -167,7 +170,7 @@ function restart() {
       if (response.confirm) {
         runProgram();
       } else {
-        connection.end()
+        connection.end();
       }
     });
 }
