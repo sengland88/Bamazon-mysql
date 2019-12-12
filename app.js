@@ -23,7 +23,7 @@ connection.connect(function(err) {
 });
 
 function runProgram() {
-  connection.query("SELECT * FROM products", function(err, res) {
+  connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err, res) {
     if (err) throw err;
     console.table(res);
 
@@ -102,13 +102,13 @@ function runProgram() {
         if (chosenItem.stock_quantity < parseInt(data.amount)) {
           console.log("Insufficient Amount — Unable to fulfill request");
           console.log(
-            `Currently only have ${chosenItem.stock_quantity} in stock.`
+            `Currently, we only have ${chosenItem.stock_quantity} in stock.`
           );
           inquirer
             .prompt([
               {
                 type: "confirm",
-                message: "Would you like to do another search?",
+                message: "Would you like to purchase the remaining stock?",
                 name: "confirm"
               }
             ])
