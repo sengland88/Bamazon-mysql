@@ -1,8 +1,10 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const Table = require('cli-table');
 
 var userName;
 var connection;
+ 
 
 inquirer
   .prompt([
@@ -39,6 +41,19 @@ inquirer
       runProgram();
     });
   });
+
+  function createTable(res) {
+
+    var table = new Table({
+      head: ['Item', 'Product', 'Department', 'Price', 'Stock']
+    , colWidths: [30, 30, 30, 30, 30]
+    });
+  
+    for (let i = 0; i < res.length; i++ ) {
+      table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity])
+    }   
+    console.log(table.toString())  
+  }
 
 function runProgram() {
   inquirer
@@ -87,7 +102,8 @@ function viewProducts() {
   connection.query("SELECT * FROM products WHERE stock_quantity > 0 ", function(err,res) {
     if (err) throw err;
 
-    console.table(res);
+    createTable(res)
+
     console.log("\n");
     runProgram();
   }); // connection end brackets
@@ -99,7 +115,7 @@ function lowInventory() {
 
     console.log("Here are all the items that have a quantity of 25 or less.")
     console.log("\n");
-    console.table(res);
+    createTable(res)
     console.log("\n");
 
     inquirer
@@ -136,7 +152,7 @@ function lowInventory() {
 function addInventory() {
   connection.query("SELECT * FROM products", function(err, res) {
     if (err) throw err;
-    console.table(res);
+    createTable(res)
 
     var resArray = [];
 
@@ -316,7 +332,7 @@ function addProducts() {
             console.log("Selecting all products...\n");
             connection.query("SELECT * FROM products", function(err, res) {
               if (err) throw err;
-              console.table(res);
+              createTable(res)
               runProgram();
             });
           }

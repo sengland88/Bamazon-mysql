@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const Table = require('cli-table');
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -22,10 +23,23 @@ connection.connect(function(err) {
   runProgram();
 });
 
+function createTable(res) {
+
+  var table = new Table({
+    head: ['Item', 'Product', 'Department', 'Price', 'Stock']
+  , colWidths: [30, 30, 30, 30, 30]
+  });
+
+  for (let i = 0; i < res.length; i++ ) {
+    table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity])
+  }   
+  console.log(table.toString())  
+}
+
 function runProgram() {
   connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err, res) {
     if (err) throw err;
-    console.table(res);
+    createTable(res)
 
     var resArray = [];
 
@@ -129,17 +143,19 @@ function runProgram() {
 
                     let plural = parseInt(data.amount) > 1 ? "s" : "";
 
-                    if (parseInt(data.amount) > 1) {
+
                       console.log(
-                        `You just purchased ${data.amount} ${
+                        `You just purchased ${chosenItem.stock_quantity} ${
                           chosenItem.product_name
-                        }${plural} for $${parseInt(data.amount) *
+                        }${plural} for $${parseInt(chosenItem.stock_quantity) *
                           parseInt(chosenItem.price)}!`
                       );
-                    }
+
                     restart();
                   }
                 );
+              } else {
+                runProgram()
               }
             });
         }
