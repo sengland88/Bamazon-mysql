@@ -47,3 +47,6 @@ This utilizes a switch statement to handle what the user inputs and triggers a f
 - If the user selects "add new product," they will be asked for the product name, department number and the price of the product. Please note that there is not currently any validation to check to see if a product already exists. If the product name already exists, it alerts the user that it already exists and informs them they will need to update the inventory quantity instead. It will then ask them if they would like to do that, return to main menu or sign out.
 
 - If the user selects "sign out," they will execute the connection server.
+
+<h2>URL</h2>
+http://bit.ly/39HinTh
