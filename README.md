@@ -49,4 +49,5 @@ This utilizes a switch statement to handle what the user inputs and triggers a f
 - If the user selects "sign out," they will execute the connection server.
 
 <h2>URL</h2>
+Please note that because this application is a command line application, I have provided a link to video demostrations. 
 http://bit.ly/39HinTh
